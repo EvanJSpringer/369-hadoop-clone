@@ -29,14 +29,15 @@ public class SortByValue {
     }
 
     public static class ReducerImpl extends Reducer<IntWritable, Text, IntWritable, Text> {
-	private IntWritable result = new IntWritable();
+	private Text result = new Text();
     
         @Override
 	protected void reduce(IntWritable value, Iterable<Text> key,
 			      Context context) throws IOException, InterruptedException {
             Iterator<Text> itr = key.iterator();
             while (itr.hasNext()){
-                context.write(value, itr.next());
+                result.set(itr.next());
+                context.write(value, result);
             }
        }
     }

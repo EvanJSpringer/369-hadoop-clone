@@ -11,8 +11,8 @@ import java.util.Iterator;
 
 public class URLCount {
 
-    public static final Class OUTPUT_KEY_CLASS = IntWritable.class;
-    public static final Class OUTPUT_VALUE_CLASS = Text.class;
+    public static final Class OUTPUT_KEY_CLASS = Text.class;
+    public static final Class OUTPUT_VALUE_CLASS = IntWritable.class;
 
     public static class MapperImpl extends Mapper<LongWritable, Text, Text, IntWritable> {
 	private final IntWritable one = new IntWritable(1);

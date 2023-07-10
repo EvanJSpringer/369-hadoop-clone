@@ -9,38 +9,33 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class URLCount {
+public class SortByValue {
 
     public static final Class OUTPUT_KEY_CLASS = Text.class;
     public static final Class OUTPUT_VALUE_CLASS = IntWritable.class;
 
-    public static class MapperImpl extends Mapper<LongWritable, Text, Text, IntWritable> {
+    public static class MapperImpl extends Mapper<LongWritable, Text, IntWritable, Text> {
 	private final IntWritable one = new IntWritable(1);
 
         @Override
 	protected void map(LongWritable key, Text value,
 			   Context context) throws IOException, InterruptedException {
-	    String[] sa = value.toString().split(" ");
-	    Text url = new Text();
-	    url.set(sa[6]);
-	    context.write(url, one);
+	    String[] sa = value.toString().split("\t");
+	    IntWritable valueText = new IntWritable(Integer.parseInt(sa[1]));
+        Text keyText = new Text();
+        keyText.set(sa[0]);
+	    context.write(valueText, keyText);
         }
     }
 
-    public static class ReducerImpl extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class ReducerImpl extends Reducer<IntWritable, Text, IntWritable, Text> {
 	private IntWritable result = new IntWritable();
     
         @Override
-	protected void reduce(Text url, Iterable<IntWritable> intOne,
+	protected void reduce(IntWritable value, Iterable<Text> key,
 			      Context context) throws IOException, InterruptedException {
-            int sum = 0;
-            Iterator<IntWritable> itr = intOne.iterator();
-        
-            while (itr.hasNext()){
-                sum  += itr.next().get();
-            }
-            result.set(sum);
-            context.write(url, result);
+            Iterator<Text> itr = key.iterator();
+            context.write(value, itr.next());
        }
     }
 

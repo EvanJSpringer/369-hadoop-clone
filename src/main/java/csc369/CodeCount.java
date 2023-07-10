@@ -22,7 +22,7 @@ public class CodeCount {
 			   Context context) throws IOException, InterruptedException {
 	    String[] sa = value.toString().split(" ");
 	    Text hostname = new Text();
-	    hostname.set(sa[7]);
+	    hostname.set(sa[8]);
 	    context.write(hostname, one);
         }
     }

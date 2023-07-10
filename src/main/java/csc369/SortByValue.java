@@ -35,7 +35,9 @@ public class SortByValue {
 	protected void reduce(IntWritable value, Iterable<Text> key,
 			      Context context) throws IOException, InterruptedException {
             Iterator<Text> itr = key.iterator();
-            context.write(value, itr.next());
+            while (itr.hasNext()){
+                context.write(value, itr.next());
+            }
        }
     }
 

@@ -9,29 +9,29 @@ import org.apache.hadoop.mapreduce.Reducer;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class TotalBytes {
+public class RequestCountPerClient {
 
     public static final Class OUTPUT_KEY_CLASS = Text.class;
     public static final Class OUTPUT_VALUE_CLASS = IntWritable.class;
 
     public static class MapperImpl extends Mapper<LongWritable, Text, Text, IntWritable> {
-	//private final IntWritable one = new IntWritable(1);
+	private final IntWritable one = new IntWritable(1);
 
 
-        //should I remove the name in the reduce function?
+        //how to sort by value num?
         @Override
 	protected void map(LongWritable key, Text value,
 			   Context context) throws IOException, InterruptedException {
 	    String[] sa = value.toString().split(" ");
-        if (sa[0].equals("65-37-13-251.nrp2.roc.ny.frontiernet.net")){
+        if (sa[6].equals("/")){
             Text hostname = new Text();
             hostname.set(sa[0]);
-            context.write(hostname, new IntWritable(Integer.parseInt(sa[9])));
+            context.write(hostname, one);
         }
         }
     }
 
-    public static class ReducerImpl extends Reducer<Text, IntWritable, Text, IntWritable> {
+    public static class ReducerImpl extends Reducer<Text, IntWritable, IntWritable, Text> {
 	private IntWritable result = new IntWritable();
     
         @Override
@@ -44,7 +44,7 @@ public class TotalBytes {
                 sum  += itr.next().get();
             }
             result.set(sum);
-            context.write(hostname, result);
+            context.write(result, hostname);
        }
     }
 

@@ -17,6 +17,8 @@ public class URLCount {
     public static class MapperImpl extends Mapper<LongWritable, Text, Text, IntWritable> {
 	private final IntWritable one = new IntWritable(1);
 
+
+        //how to sort by value num?
         @Override
 	protected void map(LongWritable key, Text value,
 			   Context context) throws IOException, InterruptedException {

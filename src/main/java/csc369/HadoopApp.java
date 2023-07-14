@@ -13,6 +13,10 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
+
 public class HadoopApp {
 
     public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
@@ -73,6 +77,19 @@ public class HadoopApp {
 		job.setMapperClass(TotalBytesByDay.MapperImpl.class);
 		job.setOutputKeyClass(TotalBytesByDay.OUTPUT_KEY_CLASS);
 		job.setOutputValueClass(TotalBytesByDay.OUTPUT_VALUE_CLASS);
+	} else if ("CountryCount".equalsIgnoreCase(otherArgs[0])) {
+
+		MultipleInputs.addInputPath(job, new Path(otherArgs[1]),
+				KeyValueTextInputFormat.class, CountryCount.CountryMapper.class );
+		MultipleInputs.addInputPath(job, new Path(otherArgs[2]),
+				TextInputFormat.class, CountryCount.LogMapper.class );
+
+		job.setReducerClass(CountryCount.JoinReducer.class);
+
+		job.setOutputKeyClass(CountryCount.OUTPUT_KEY_CLASS);
+		job.setOutputValueClass(CountryCount.OUTPUT_VALUE_CLASS);
+		FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
+
 	} else {
 	    System.out.println("Unrecognized job: " + otherArgs[0]);
 	    System.exit(-1);
